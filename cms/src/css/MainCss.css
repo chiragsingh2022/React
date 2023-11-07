@@ -1,0 +1,47 @@
+.user-login{
+display:grid;
+   
+   justify-content:center;
+   margin-right: 10px; margin-top: 5px;
+  
+  
+  
+}
+.user-register{
+    float: right; 
+     
+     margin-right: 10px; margin-top: 5px;
+     width: 50%; height: 100%;
+    
+    
+  }
+
+.user-list{
+    width: 45%; margin-left: 10px; margin-top: 5px; 
+    position: absolute;
+}
+
+.leftPan{
+    
+   margin: 10px;
+    width: 30%;
+    height: 500px;
+    outline: 1px solid red; 
+   
+}
+.leftPan h4 {
+   
+    color: black;
+    padding: 10px;
+    outline: 1px solid red; 
+  
+}
+.image-div{
+    height: 600px;
+    width: 100%;
+    border: 2px solid navy;
+}
+
+.section-div{
+    background-color: cornflowerblue;
+}
