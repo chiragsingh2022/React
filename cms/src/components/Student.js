@@ -65,49 +65,48 @@ const Student = () => {
     return (
         <>
             <NavBar />
-            <div style={{ margin: "2px" }}>
-                <Button style={{ float: "right" }} onClick={() => navigate("/poststudent")} variant="primary">Create Student</Button>
-            </div>
-            <div style={{ margin: "10px 10px 10px 10px" }}>
-                <Table hover>
-                    <thead>
-                        <tr>
-                            <th>Sr. No.</th>
-                            <th>StudentID</th>
-                            <th>Name</th>
-                            <th>DOB</th>
-                            <th>Mobile</th>
-                            <th>Email</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            student.map((item, i) => (
+            <div style={{ minHeight: "100vh" }}>
+                <div style={{ margin: "10px 10px 10px 10px" }}>
+                    <Table responsive hover>
+                        <thead>
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>StudentID</th>
+                                <th>Name</th>
+                                <th>DOB</th>
+                                <th>Mobile</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                student.map((item, i) => (
 
-                                <tr key={i}>
-                                    <td>{i + 1}</td>
-                                    <td>{item.studentid}</td>
-                                    <td>{item.fname} {item.lname}</td>
-                                    <td>{item.dob ? format(new Date(item.dob), 'dd-MM-yyyy') : ''}</td>
-                                    <td>{item.phonenumber}</td>
-                                    <td>{item.email}</td>
-                                    <td>
-                                        {
-                                            user.userType === 'Admin' ? (<>
-                                                <Button style={{ marginRight: 8 }} variant="outline-danger" onClick={() => DeleteStudent(item._id)}>Delete</Button>
+                                    <tr key={i}>
+                                        <td>{i + 1}</td>
+                                        <td>{item.studentid}</td>
+                                        <td>{item.fname} {item.lname}</td>
+                                        <td>{item.dob ? format(new Date(item.dob), 'dd-MM-yyyy') : ''}</td>
+                                        <td>{item.phonenumber}</td>
+                                        <td>{item.email}</td>
+                                        <td>
+                                            {
+                                                user.userType === 'Admin' ? (<>
+                                                    <Button variant="outline-danger" onClick={() => DeleteStudent(item._id)}>Delete</Button>&nbsp;
 
-                                                <Button variant="outline-success" onClick={() => UpdateStudent(item)} >Update</Button>
-                                            </>)
-                                                :
-                                                null
-                                        }
-                                    </td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </Table>
+                                                    <Button variant="outline-success" onClick={() => UpdateStudent(item)} >Update</Button>
+                                                </>)
+                                                    :
+                                                    null
+                                            }
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </Table>
+                </div>
             </div>
         </>
     );

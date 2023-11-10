@@ -1,8 +1,10 @@
 import { format } from 'date-fns';
 import React, { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Form, FormCheck, Table } from 'react-bootstrap';
+import { Button, ButtonGroup, Form, FormCheck, Navbar, Table } from 'react-bootstrap';
 import api_URL from '../Helper';
 //import axios from 'axios';
+import Grid from '@mui/material/Grid';
+import NavBar from './NavBar';
 
 const StudentAttendance = () => {
     const [students, setStudents] = useState([]);
@@ -42,6 +44,9 @@ const StudentAttendance = () => {
         console.log(abc, _id)
     };
     return (
+        <>
+        <NavBar/>
+        <Grid container component="main" sx={{ height: '100vh' }}>
         <div>
             <h1>Student Attendance</h1>
             <Table striped bordered hover>
@@ -84,6 +89,8 @@ const StudentAttendance = () => {
                 </tbody> */}
             </Table>
         </div>
+        </Grid>
+        </>
     );
 };
 
