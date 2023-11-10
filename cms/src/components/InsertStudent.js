@@ -62,7 +62,6 @@ const InsertStudent = () => {
 
 
     const PostStudent = async () => {
-console.log(formData);
         try {
             var saved = await fetch(`${api_URL}/api/student/`, {
                 method: 'POST',
@@ -106,7 +105,7 @@ console.log(formData);
                             id="studentid"
                             name="studentid"
                             label="Student ID" onChange={handleChange}
-                            fullWidth
+                            fullWidth autoFocus
                             autoComplete="student-id"
                             variant="standard"
                         />
@@ -145,21 +144,21 @@ console.log(formData);
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        
+
                         <FormControl fullWidth variant="standard" >
                             <InputLabel required id="demo-simple-select-standard-label">Gender</InputLabel>
-                            <Select
+                            <Select native={true}
                                 labelId="demo-simple-select-standard-label"
                                 id="demo-simple-select-standard"
                                 onChange={handleChange} name="gender"
                                 label="Gender"
                             >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value="Male">Male</MenuItem>
-                                <MenuItem value="Female">Female</MenuItem>
-                                <MenuItem value="Other">Other</MenuItem>
+                                <option value="">
+                                   
+                                </option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
                             </Select>
                         </FormControl>
                     </Grid>
@@ -197,11 +196,11 @@ console.log(formData);
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField
+                        <TextField required
                             id="address"
                             name="address" onChange={handleChange}
-                            label="Address" 
-                            fullWidth 
+                            label="Address"
+                            fullWidth
                             autoComplete="address-line1"
                             variant="standard"
                         />
@@ -248,10 +247,10 @@ console.log(formData);
                             variant="standard"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={4} />                
-                   
-                    <Grid sx={{ '& button': { mt: 2,p: 1 } }} item sm={4}>
-                    <Button onClick={PostStudent}  fullWidth variant="contained">Save</Button>
+                    <Grid item xs={12} sm={4} />
+
+                    <Grid sx={{ '& button': { mt: 2, p: 1 } }} item sm={4}>
+                        <Button onClick={PostStudent} fullWidth variant="contained">Save</Button>
                     </Grid>
                 </Grid>
             </div>

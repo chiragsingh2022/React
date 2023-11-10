@@ -58,24 +58,17 @@ const UserRegistration = () => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        if (!data.get('userType')) {
-            alert("Please select a user role.");
-            return;
-        }
-
-        if (!data.get('email')) {
-            alert("Please enter a username.");
-            return;
-        }
-
-        if (!data.get('password')) {
-            alert("Please enter a password.");
+        if (!data.get('userType') || !data.get('email') || !data.get('password') || !data.get('fname') || !data.get('lname') || !data.get('mobile')) {
+            alert("Please fill in all required fields.");
             return;
         }
         const userData = {
             userType: data.get('userType'),
             userid: data.get('email'),
             password: data.get('password'),
+            lname: data.get('lname'),
+            fname: data.get('fname'),
+            mobile: data.get('mobile'),
         }
         try {
             var saved = await fetch(`${api_URL}/api/user/`, {
@@ -124,7 +117,7 @@ const UserRegistration = () => {
         <>
             <NavBar />
             <Grid p={4} container spacing={3} sx={{ minHeight: '100vh' }}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={8}>
                     <div className='w3-responsive'>
                         <table className="w3-table-all w3-card-4 w3-hoverable">
                             <thead >
@@ -133,7 +126,13 @@ const UserRegistration = () => {
                                         Sr No.
                                     </th>
                                     <th>
-                                        User Role
+                                        Role
+                                    </th>
+                                    <th>
+                                        Name
+                                    </th>
+                                    <th>
+                                        Mobile
                                     </th>
                                     <th>
                                         User Name
@@ -154,6 +153,12 @@ const UserRegistration = () => {
                                                 {item.userType}
                                             </td>
                                             <td>
+                                                {item.fname} {item.lname}
+                                            </td>
+                                            <td>
+                                                {item.mobile}
+                                            </td>
+                                            <td>
                                                 {item.userid}
                                             </td>
                                             <td>{
@@ -170,14 +175,14 @@ const UserRegistration = () => {
                         </table>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
 
                     <div className="w3-card-4 w3-container" >
                         <Container component="main" maxWidth="md">
                             <CssBaseline />
                             <Box
                                 sx={{
-                                    marginTop: 8,
+                                    marginTop: 4,
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
@@ -189,12 +194,39 @@ const UserRegistration = () => {
                                 <Typography component="h1" variant="h5">
                                     Sign up
                                 </Typography>
-                                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 6 }}>
                                     <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl fullWidth variant="outlined" >
+                                                <InputLabel required id="demo-simple-select-standard-label">Role</InputLabel>
+                                                <Select native={true}
+                                                    labelId="demo-simple-select-outlined-label"
+                                                    id="demo-simple-select-outlined"
+                                                    name="userType"
+                                                    label="Role"
+                                                >
+                                                    <option value=""></option>
+                                                    <option value="Admin">Admin</option>
+                                                    <option value="Teacher">Teacher</option>
+                                                    <option value="Other">Other</option>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                autoComplete="user-mobile"
+                                                name="mobile"
+                                                required
+                                                fullWidth
+                                                id="mobile"
+                                                label="Mobile"
+                                                autoFocus
+                                            />
+                                        </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
                                                 autoComplete="given-name"
-                                                name="firstName"
+                                                name="fname"
                                                 required
                                                 fullWidth
                                                 id="firstName"
@@ -208,29 +240,11 @@ const UserRegistration = () => {
                                                 fullWidth
                                                 id="lastName"
                                                 label="Last Name"
-                                                name="lastName"
+                                                name="lname"
                                                 autoComplete="family-name"
                                             />
                                         </Grid>
-                                        <Grid item xs={12}>
 
-                                            <FormControl fullWidth variant="outlined" >
-                                                <InputLabel required id="demo-simple-select-standard-label">Role</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-outlined-label"
-                                                    id="demo-simple-select-outlined"
-                                                    name="userType"
-                                                    label="Role"
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>None</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Admin">Admin</MenuItem>
-                                                    <MenuItem value="Teacher">Teacher</MenuItem>
-                                                    <MenuItem value="Other">Other</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
                                         <Grid item xs={12}>
                                             <TextField
                                                 required
@@ -258,7 +272,7 @@ const UserRegistration = () => {
                                         type="submit"
                                         fullWidth
                                         variant="contained"
-                                        sx={{ mt: 3, mb: 2 }}
+                                        sx={{ mt: 4, mb: 6 }}
                                     >
                                         Sign Up
                                     </Button>
