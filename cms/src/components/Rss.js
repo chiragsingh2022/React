@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 import api_URL from "../Helper";
 import { Table } from "react-bootstrap";
-
+import Grid from '@mui/material/Grid';
 
 const Rss = () =>{
 
@@ -42,7 +42,8 @@ const token = localStorage.getItem('token');
     return(
         <>
         <NavBar />
-        <div style={{ margin: "10px 10px 100px 10px" }}>
+
+        <div style={{ margin: "10px 10px 100px 10px", minHeight:"100vh"}}>
             <Table hover>
                 <thead>
                     <tr>

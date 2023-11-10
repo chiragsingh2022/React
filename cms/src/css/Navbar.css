@@ -26,3 +26,7 @@
   .nav-bar-link-login{
     align-items: right;
   }
+
+  #nav-dropdown{
+    color: white;
+}
