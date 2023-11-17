@@ -1,80 +1,100 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import React from "react";
 import '../css/Navbar.css'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Button, NavDropdown } from "react-bootstrap";
-//const LocalData = JSON.parse(localStorage.getItem('user'));
+import { useEffect, useState } from "react";
+import Cookies from "../Cookies";
+import AddUserDialog from "../Dialogs/AddUserDialog";
+import AddStudentDialog from "../Dialogs/AddStudentDialog";
+import api_URL from "../Helper";
+
+
 const NavBar = () => {
+    const [modalShow, setModalShow] = React.useState(false);
+    const [addStudentModel, setAddStudentModel] = React.useState(false);
     const userName = JSON.parse(localStorage.getItem('user'));
     //console.log(userName.userid);
     const navigate = useNavigate();
     const Logout = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        navigate('/');
+        localStorage.clear();
+        Cookies.clear();
+        //to clear the cookie immediate from browser
+        window.location.href = '/';
+        //navigate('/');
     }
-    // return (
-    //     <>
-    //         <Navbar expand="lg" collapseOnSelect className="nav-bar" bg="primary" data-bs-theme="dark">
-    //             <Navbar.Brand style={{ marginLeft: 20 }} ><NavLink className="nav-bar-link" to="/">SMSDC</NavLink></Navbar.Brand>
-    // <Nav className="me-auto" >
-    //     {
-    //         userName && userName.userType === 'Admin' ? (
-    //             <>
 
-    //                 <Nav.Link ><NavLink className="nav-bar-link" to="/contact">Contact</NavLink></Nav.Link>
-    //                 <Nav.Link ><NavLink className="nav-bar-link" to="/student">Student</NavLink></Nav.Link>
-    //                 <Nav.Link ><NavLink className="nav-bar-link" to="/userRegistration">Registration</NavLink></Nav.Link>
-    //                 <Nav.Link ><NavLink className="nav-bar-link" to="/rss">RSS</NavLink></Nav.Link>
-    //                 <Nav.Link ><NavLink className="nav-bar-link" to="/studentattendance">Attendance</NavLink></Nav.Link>
+// return (
+//     <>
+//         <Navbar expand="lg" collapseOnSelect className="nav-bar" bg="primary" data-bs-theme="dark">
+//             <Navbar.Brand style={{ marginLeft: 20 }} ><NavLink className="nav-bar-link" to="/">SMSDC</NavLink></Navbar.Brand>
+// <Nav className="me-auto" >
+//     {
+//         userName && userName.userType === 'Admin' ? (
+//             <>
 
-    //             </>
-    //         ) : userName && userName.userType === 'Other' ? (
-    //             <>
-    //                 <Nav.Link ><NavLink className="nav-bar-link" to="/contact">Contact</NavLink></Nav.Link>
-    //                 <Nav.Link ><NavLink className="nav-bar-link" to="/student">Student</NavLink></Nav.Link>
-    //             </>
-    //         ) :
-    //             <>
-    //                 <Nav.Link ><NavLink className="nav-bar-link" to="/login">Login</NavLink></Nav.Link>
-    //             </>
-    //     }
-    // </Nav>
+//                 <Nav.Link ><NavLink className="nav-bar-link" to="/contact">Contact</NavLink></Nav.Link>
+//                 <Nav.Link ><NavLink className="nav-bar-link" to="/student">Student</NavLink></Nav.Link>
+//                 <Nav.Link ><NavLink className="nav-bar-link" to="/userRegistration">Registration</NavLink></Nav.Link>
+//                 <Nav.Link ><NavLink className="nav-bar-link" to="/rss">RSS</NavLink></Nav.Link>
+//                 <Nav.Link ><NavLink className="nav-bar-link" to="/studentattendance">Attendance</NavLink></Nav.Link>
 
-    // {
-    //     localStorage.getItem('user') ?
-    //         <Nav style={{ marginRight: 20 }}>
-    //             <NavDropdown title={userName && userName.userid}>
-    //                 <NavDropdown.Item >Profile</NavDropdown.Item>
-    //                 <NavDropdown.Item onClick={Logout}>Logout</NavDropdown.Item>
-    //             </NavDropdown>
-    //         </Nav>
-    //         : null
-    // }
+//             </>
+//         ) : userName && userName.userType === 'Other' ? (
+//             <>
+//                 <Nav.Link ><NavLink className="nav-bar-link" to="/contact">Contact</NavLink></Nav.Link>
+//                 <Nav.Link ><NavLink className="nav-bar-link" to="/student">Student</NavLink></Nav.Link>
+//             </>
+//         ) :
+//             <>
+//                 <Nav.Link ><NavLink className="nav-bar-link" to="/login">Login</NavLink></Nav.Link>
+//             </>
+//     }
+// </Nav>
 
-    //         </Navbar>
+// {
+//     localStorage.getItem('user') ?
+//         <Nav style={{ marginRight: 20 }}>
+//             <NavDropdown title={userName && userName.userid}>
+//                 <NavDropdown.Item >Profile</NavDropdown.Item>
+//                 <NavDropdown.Item onClick={Logout}>Logout</NavDropdown.Item>
+//             </NavDropdown>
+//         </Nav>
+//         : null
+// }
 
-    //     </>
-    // );
+//         </Navbar>
 
-    return (
+//     </>
+// );
+
+return (
+    <>
+        <AddUserDialog show={modalShow} onHide={() => setModalShow(false)} />
+        <AddStudentDialog show={addStudentModel} onHide={() => setAddStudentModel(false)} />
+
         <Navbar collapseOnSelect expand="lg" bg="primary" data-bs-theme="dark">
             <Navbar.Brand style={{ marginLeft: 20 }}><NavLink className="nav-bar-link" to="/">SMSDC</NavLink></Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav style={{ marginLeft: 20 }} className="me-auto" >
                     {
-                        userName && userName.userType === 'Admin' ? (
+                        userName && userName.canviewstudent ? (
                             <>
 
                                 <Nav.Link ><NavLink className="nav-bar-link" to="/contact">Contact</NavLink></Nav.Link>
                                 <NavDropdown title={"Student"} id="nav-dropdown" >
                                     <NavDropdown.Item onClick={() => navigate("/student")} >View Student</NavDropdown.Item>
-                                    <NavDropdown.Item onClick={() => navigate("/poststudent")} >Add Student</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={() => setAddStudentModel(true)} >Add Student</NavDropdown.Item>
                                 </NavDropdown>
-                                {/* <Nav.Link ><NavLink className="nav-bar-link" to="/student">Student</NavLink></Nav.Link> */}
-                                <Nav.Link ><NavLink className="nav-bar-link" to="/userRegistration">Registration</NavLink></Nav.Link>
+                               
+                                <NavDropdown title={"Registration"} id="nav-dropdown" >
+                                    <NavDropdown.Item onClick={() => navigate("/userRegistration")} >View User</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={() => setModalShow(true)} >Add User</NavDropdown.Item>
+                                </NavDropdown>
+                                
                                 <Nav.Link ><NavLink className="nav-bar-link" to="/rss">RSS</NavLink></Nav.Link>
                                 <Nav.Link ><NavLink className="nav-bar-link" to="/studentattendance">Attendance</NavLink></Nav.Link>
 
@@ -85,16 +105,14 @@ const NavBar = () => {
                                 <Nav.Link ><NavLink className="nav-bar-link" to="/student">Student</NavLink></Nav.Link>
                             </>
                         ) : null
-                        // <>
-                        //     <Nav.Link ><NavLink className="nav-bar-link" to="/login">Login</NavLink></Nav.Link>
-                        // </>
+                       
                     }
                 </Nav>
 
                 {
                     localStorage.getItem('user') ?
                         <Nav style={{ marginLeft: 20, marginRight: 20 }}>
-                            <NavDropdown title={userName && userName.userid} id="collapsible-nav-dropdown">
+                            <NavDropdown title={userName && `${userName.fname} ${userName.lname}`} id="collapsible-nav-dropdown">
                                 <NavDropdown.Item >Profile</NavDropdown.Item>
                                 <NavDropdown.Item onClick={Logout}>Logout</NavDropdown.Item>
                             </NavDropdown>
@@ -105,31 +123,10 @@ const NavBar = () => {
                         </>
                 }
 
-                {/* <Nav className="me-auto">
-                <Nav.Link href="#features">Features</Nav.Link>
-                <Nav.Link href="#pricing">Pricing</Nav.Link>
-                <NavDropdown title="Dropdown" id="collapsible-nav-dropdown">
-                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action/3.4">
-                    Separated link
-                  </NavDropdown.Item>
-                </NavDropdown>
-              </Nav> */}
-                {/* <Nav>
-                <Nav.Link href="#deets">More deets</Nav.Link>
-                <Nav.Link eventKey={2} href="#memes">
-                  Dank memes
-                </Nav.Link>
-              </Nav> */}
             </Navbar.Collapse>
         </Navbar>
-
-    );
+    </>
+);
 }
 
 export default NavBar;

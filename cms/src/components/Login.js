@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import '../css/MainCss.css'
-import 'w3-css/w3.css';
+import React, { useState, useEffect } from 'react';
+//import '../css/MainCss.css'
+//import 'w3-css/w3.css';
 import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
 import api_URL from '../Helper';
@@ -10,40 +10,29 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="/">
-                SMSDC
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import Cookies from '../Cookies';
+import MessageDialog from '../Dialogs/MessageDialog';
 
-// TODO remove, this demo shouldn't need to reset the theme.
 
-const defaultTheme = createTheme();
+
 
 const Login = () => {
+
     const navigate = useNavigate();
 
+    const [modalShow, setModalShow] = React.useState(false);
+    const [errorMessage, setError] = useState(null);
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log();
 
         const userData = {
-            email: data.get('email'),
+            userid: data.get('userid'),
             password: data.get('password'),
         }
 
@@ -55,35 +44,38 @@ const Login = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(userData)
-            })
+            });
+
             if (saved.status === 200) {
                 const response = await saved.json();
-                //alert("User Successfully Created")
-                //console.log(response.user)
+                Cookies.setItem('user', JSON.stringify(response.user), 2);
+                Cookies.setItem('token', response.auth, 2);
                 localStorage.setItem('user', JSON.stringify(response.user)); // Use setItem to store data
                 localStorage.setItem('token', response.auth); // Use setItem to store data
                 navigate('/')
             }
-            else if (saved.status === 401) {
-                // Handle the case of incorrect credentials
-                alert("Wrong credentials");
-            }
-            else if (saved.status === 404) {
-                // Handle the case of Not found
-                alert("User Not Registered");
-            }
             else {
-                alert(saved.statusText)
+                const error = await saved.json();
+                setError(error.error);
+                setModalShow(true);
+                //alert(error.error)
                 console.log("Request was not successful. Status Code : " + saved.status)
             }
-        } catch (e) {
+        }
+        catch (e) {
             console.log(e)
         }
     }
-    
+
     return (
-        <ThemeProvider theme={defaultTheme}>
-             <NavBar />
+        <>
+
+            <MessageDialog
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                message = {errorMessage}
+            />
+            <NavBar />
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
                 <Grid
@@ -121,9 +113,9 @@ const Login = () => {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="email"
+                                id="userid"
                                 label="Email Address"
-                                name="email"
+                                name="userid"
                                 autoComplete="email"
                                 autoFocus
                             />
@@ -155,18 +147,13 @@ const Login = () => {
                                         Forgot password?
                                     </Link>
                                 </Grid>
-                                <Grid item>
-                                    <Link href="#" variant="body2">
-                                        {"Don't have an account? Sign Up"}
-                                    </Link>
-                                </Grid>
                             </Grid> */}
-                            <Copyright sx={{ mt: 5 }} />
                         </Box>
                     </Box>
                 </Grid>
             </Grid>
-        </ThemeProvider>
+
+        </>
     );
 }
 

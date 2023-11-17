@@ -60,7 +60,6 @@ const InsertStudent = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-
     const PostStudent = async () => {
         try {
             var saved = await fetch(`${api_URL}/api/student/`, {
@@ -147,18 +146,19 @@ const InsertStudent = () => {
 
                         <FormControl fullWidth variant="standard" >
                             <InputLabel required id="demo-simple-select-standard-label">Gender</InputLabel>
-                            <Select native={true}
+                            <Select
                                 labelId="demo-simple-select-standard-label"
                                 id="demo-simple-select-standard"
-                                onChange={handleChange} name="gender"
+                                onChange={handleChange}
+                                name="gender"
                                 label="Gender"
                             >
-                                <option value="">
-                                   
-                                </option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
+                                <MenuItem value="">
+                                   <em>None</em>
+                                </MenuItem>
+                                <MenuItem value="Male">Male</MenuItem>
+                                <MenuItem value="Female">Female</MenuItem>
+                                <MenuItem value="Other">Other</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
@@ -188,7 +188,8 @@ const InsertStudent = () => {
                         <TextField
                             required
                             id="email"
-                            name="email" onChange={handleChange}
+                            name="email" 
+                            onChange={handleChange}
                             label="Email"
                             fullWidth
                             autoComplete="email-address"

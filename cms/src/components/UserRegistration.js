@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../css/MainCss.css';
-import 'w3-css/w3.css';
+//import 'w3-css/w3.css';
 import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
 import { Table } from 'react-bootstrap';
@@ -18,14 +18,20 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
-const token = localStorage.getItem('token');
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Slide from '@mui/material/Slide';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const UserRegistration = () => {
+    const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
 
     const navigate = useNavigate();
     const [userList, setUserList] = useState([]);
+
+
 
     useEffect(() => {
         GetUser();
@@ -54,74 +60,88 @@ const UserRegistration = () => {
         }
     }
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     const data = new FormData(event.currentTarget);
 
-        if (!data.get('userType') || !data.get('email') || !data.get('password') || !data.get('fname') || !data.get('lname') || !data.get('mobile')) {
-            alert("Please fill in all required fields.");
-            return;
-        }
-        const userData = {
-            userType: data.get('userType'),
-            userid: data.get('email'),
-            password: data.get('password'),
-            lname: data.get('lname'),
-            fname: data.get('fname'),
-            mobile: data.get('mobile'),
-        }
-        try {
-            var saved = await fetch(`${api_URL}/api/user/`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(userData)
-            })
-            if (saved.ok) {
-                const response = await saved.json();
-                alert("User Successfully Created")
-                GetUser();
-                //localStorage.setItem('user', JSON.stringify(response)); // Use setItem to store data
-                //navigate('/')
-            }
-            else {
-                alert(saved.statusText)
-                console.log("Request was not successful. Status Code : " + saved.status)
-            }
-        } catch (e) {
-            console.log(e)
-        }
-    };
+    //     if (!data.get('userType') || !data.get('email') || !data.get('password') || !data.get('fname') || !data.get('lname') || !data.get('mobile')) {
+    //         alert("Please fill in all required fields.");
+    //         return;
+    //     }
+    //     const userData = {
+    //         userType: data.get('userType'),
+    //         userid: data.get('email'),
+    //         password: data.get('password'),
+    //         lname: data.get('lname'),
+    //         fname: data.get('fname'),
+    //         mobile: data.get('mobile'),
+    //     }
+    //     try {
+    //         var saved = await fetch(`${api_URL}/api/user/`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Accept': 'application/json',
+    //                 'Content-Type': 'application/json',
+    //                 'authorization': `Bearer ${token}`
+    //             },
+    //             body: JSON.stringify(userData)
+    //         });
+
+    //         if (saved.ok) {
+    //             const savedData = await saved.json();
+    //             // to added a snackbar
+    //             setTransition(() => TransitionLeft);
+    //             setOpen(true);
+    //             // Update the userList state with the saved data
+    //             setUserList(prevUserList => [...prevUserList, savedData]);
+    //         }
+    //         else {
+    //             const error = await saved.json();
+    //             alert(error.error);
+    //             console.log("Request was not successful. Status Code : " + saved.status)
+    //         }
+    //     }
+    //     catch (e) {
+    //         console.log(e)
+    //     }
+    // };
 
     const DeleteUser = async (_id) => {
-        if (user._id !== _id) {
-            let deleteUser = await fetch(`${api_URL}/api/user/${_id}`, {
-                method: 'DELETE',
-                headers: {
-                    'authorization': `Bearer ${localStorage.getItem('token')}`
+        const confirmed = window.confirm("Are you sure ?");
+        if (confirmed) {
+            try {
+                if (user._id !== _id) {
+                    let deleteUser = await fetch(`${api_URL}/api/user/${_id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    })
+                    if (deleteUser.ok) {
+                        setUserList(prevUserList => prevUserList.filter(usr => usr._id !== _id));
+                    }
                 }
-            })
-            if (deleteUser) {
-                GetUser();
+                else {
+                    alert("LoggedIn username can't be delete");
+                }
             }
-        }
-        else {
-            alert("LoggedIn username can't be delete");
+            catch (e) {
+                console.log(e);
+
+            }
         }
     }
 
     return (
         <>
             <NavBar />
+
             <Grid p={4} container spacing={3} sx={{ minHeight: '100vh' }}>
-                <Grid item xs={12} sm={8}>
-                    <div className='w3-responsive'>
-                        <table className="w3-table-all w3-card-4 w3-hoverable">
-                            <thead >
-                                <tr className='w3-green'>
+                <Grid item xs={12} sm={12}>
+                    <div style={{ borderRadius: 8 }} >
+                        <Table responsive hover>
+                            <thead>
+                                <tr>
                                     <th>
                                         Sr No.
                                     </th>
@@ -163,7 +183,9 @@ const UserRegistration = () => {
                                             </td>
                                             <td>{
                                                 user._id !== item._id ?
-                                                    <Button variant='outlined' color='error' onClick={() => DeleteUser(item._id)}>Delete</Button>
+                                                    <IconButton sx={{ '&:hover': { boxShadow: 4 } }} onClick={() => DeleteUser(item._id)} aria-label="delete" size="small">
+                                                        <DeleteIcon fontSize="small" />
+                                                    </IconButton>
                                                     :
                                                     <h5>Logged In</h5>
                                             }
@@ -172,12 +194,12 @@ const UserRegistration = () => {
                                     ))
                                 }
                             </tbody>
-                        </table>
+                        </Table>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                {/* <Grid item xs={12} sm={4}>
 
-                    <div className="w3-card-4 w3-container" >
+                    <div style={{borderRadius:8}} className="w3-card-4 w3-container" >
                         <Container component="main" maxWidth="md">
                             <CssBaseline />
                             <Box
@@ -199,16 +221,18 @@ const UserRegistration = () => {
                                         <Grid item xs={12} sm={6}>
                                             <FormControl fullWidth variant="outlined" >
                                                 <InputLabel required id="demo-simple-select-standard-label">Role</InputLabel>
-                                                <Select native={true}
+                                                <Select
                                                     labelId="demo-simple-select-outlined-label"
                                                     id="demo-simple-select-outlined"
                                                     name="userType"
                                                     label="Role"
                                                 >
-                                                    <option value=""></option>
-                                                    <option value="Admin">Admin</option>
-                                                    <option value="Teacher">Teacher</option>
-                                                    <option value="Other">Other</option>
+                                                    <MenuItem value="">
+                                                        <em>None</em>
+                                                    </MenuItem>
+                                                    <MenuItem value="Admin">Admin</MenuItem>
+                                                    <MenuItem value="Teacher">Teacher</MenuItem>
+                                                    <MenuItem value="Other">Other</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         </Grid>
@@ -286,8 +310,7 @@ const UserRegistration = () => {
 
                     </div>
 
-
-                </Grid>
+                </Grid> */}
             </Grid>
         </>
     );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 import { format } from 'date-fns';
 import api_URL from "../Helper";
@@ -35,7 +35,7 @@ const Student = () => {
                 }
                 else {
                     localStorage.clear();
-                    navigate(res.result);
+                    navigate(res.redirect);
                 }
             });
         });
@@ -44,17 +44,22 @@ const Student = () => {
     const DeleteStudent = (_id) => {
         var confirmed = window.confirm("Do you want do delete ?")
         if (confirmed) {
-            fetch(`${api_URL}/api/student/${_id}`, {
-                method: 'DELETE',
-                headers: {
-                    'authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            }).then((res) => {
-                res.json().then((result) => {
+            try {
+                fetch(`${api_URL}/api/student/${_id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                }).then((res) => {
+                    res.json().then((result) => {
 
-                    FetchDataList();
+                        //FetchDataList();
+                    })
                 })
-            })
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
     }
 

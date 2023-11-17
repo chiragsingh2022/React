@@ -44,7 +44,7 @@ const token = localStorage.getItem('token');
         <NavBar />
 
         <div style={{ margin: "10px 10px 100px 10px", minHeight:"100vh"}}>
-            <Table hover>
+            <Table responsive hover>
                 <thead>
                     <tr>
                         <th>Sr. No.</th>
