@@ -5,6 +5,7 @@ import api_URL from '../Helper';
 //import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import NavBar from './NavBar';
+import { Checkbox } from '@mui/material';
 
 const StudentAttendance = () => {
     const [students, setStudents] = useState([]);
@@ -17,19 +18,29 @@ const StudentAttendance = () => {
     //     dateHeaders.push(date.toLocaleDateString()); // Format the date as needed
     // }
 
-    const [attendanceCheckboxes, setAttendanceCheckboxes] = useState(false);
+    const [attendanceCheckboxes, setAttendanceCheckboxes] = useState({});
+    const [checked, setChecked] = React.useState(false);
+
+    const handleChange = (studentId, isChecked) => {
+        setAttendanceCheckboxes(prevState => ({ ...prevState, [studentId]: isChecked }));
+        console.log(attendanceCheckboxes)
+    };
+
 
     // Fetch student data and attendance from your API
     useEffect(() => {
         fetch(`${api_URL}/api/student`, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'authorization': `Bearer ${localStorage.getItem('token')}`
+            }
         }) // Replace with your API endpoint
             .then((result) => {
                 result.json().then((res) => {
                     //console.log(res);
                     if (Array.isArray(res)) {
                         setStudents(res);
-
+                        //console.log(res);
                     }
                     else {
                         // localStorage.clear();
@@ -39,40 +50,49 @@ const StudentAttendance = () => {
             });
     }, []);
 
-    const handleCheckboxChange = (e, _id) => {
-        let abc = e.target.checked;
-        console.log(abc, _id)
-    };
     return (
         <>
-        <NavBar/>
-        <Grid container component="main" sx={{ height: '100vh' }}>
-        <div>
-            <h1>Student Attendance</h1>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>{date}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        students.map((student) => (
-                            <tr key={student._id}>
-                                <td>{student.fname} {student.lname}</td>
-                                <td>
-                                    <ButtonGroup>
-                                        <Button variant='outline-danger'>A</Button>&nbsp;
-                                        <Button variant='outline-success'>P</Button>
-                                    </ButtonGroup>
-                                </td>
-
+            <NavBar />
+            <Grid container component="main" sx={{ height: '100vh' }}>
+                <div>
+                    <h1>Student Attendance</h1>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>{date}</th>
                             </tr>
-                        ))
-                    }
-                </tbody>
-                {/* <tbody>
+                        </thead>
+                        <tbody>
+                            {
+                                students.map((student) => (
+                                    <tr key={student._id}>
+                                        <td>{student.fname} {student.lname}</td>
+                                        <td>
+                                            <Checkbox
+                                                checked={attendanceCheckboxes[student._id]}
+                                                onChange={(e) => handleChange(student._id, e.target.checked)}
+                                                inputProps={{ 'aria-label': 'controlled' }}
+                                            />
+                                        </td>
+
+                                    </tr>
+                                ))
+                            }
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <Button>Click</Button>
+                                </td>
+                            </tr>
+
+                        </tfoot>
+                        {/* <tbody>
                     {students.map((student) => (
                         <tr key={student._id}>
                             <td>{student.fname} {student.lname}</td>
@@ -87,9 +107,9 @@ const StudentAttendance = () => {
                         </tr>
                     ))}
                 </tbody> */}
-            </Table>
-        </div>
-        </Grid>
+                    </Table>
+                </div>
+            </Grid>
         </>
     );
 };

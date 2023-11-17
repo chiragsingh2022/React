@@ -2,7 +2,7 @@ import logo from './logo.svg';
 //import './App.css';
 import Home from './components/Home'
 import NavBar from './components/NavBar';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Student from './components/Student';
@@ -13,8 +13,10 @@ import UserRegistration from './components/UserRegistration';
 import UpdateStudent from './components/UpdateStudent';
 import Rss from './components/Rss';
 import StudentAttendance from './components/StudentAttendance';
+import { useEffect, useState } from 'react';
 
 function App() {
+
   return (
     <div>
       <Header/>
