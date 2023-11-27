@@ -18,8 +18,8 @@ import api_URL from '../Helper';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
-
-
+import axios from 'axios';
+import { userServices } from '../services/user-services';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -40,6 +40,7 @@ function AddUserDialog(props) {
         setOpen(false);
     };
     const token = localStorage.getItem('token');
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -56,33 +57,43 @@ function AddUserDialog(props) {
             fname: data.get('fname'),
             mobile: data.get('mobile'),
         }
+       // console.log(userData,'userData');
         try {
-            var saved = await fetch(`${api_URL}/api/user/`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(userData)
-            });
-
-            if (saved.ok) {
-                props.onHide();
-                //const savedData = await saved.json();
-                // to added a snackbar
+            userServices.postUser(userData).then((res)=>{
                 setTransition(() => TransitionLeft);
-                //setOpen(true);
-                // Update the userList state with the saved data
-                //setUserList(prevUserList => [...prevUserList, savedData]);
-            }
-            else {
-                const error = await saved.json();
-                alert(error.error);
-                console.log("Request was not successful. Status Code : " + saved.status)
-            }
+                setOpen(true);
+                props.onHide();
+            }).catch((error)=>{
+                console.log(error);
+            });
+            // var saved = await axios.post(`${api_URL}/api/user/`,userData, {
+            //     //method: 'POST',
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         //'Content-Type': 'application/json',
+            //         //'Content-Type': 'multipart/form-data',
+            //         'authorization': `Bearer ${token}`
+            //     },
+            //     //body: JSON.stringify(userData)
+            // });
+
+            // if (saved.status === 201) {
+            //     // to added a snackbar
+            //     setTransition(() => TransitionLeft);
+            //     setOpen(true);
+            //     props.onHide();
+            //     // Update the userList state with the saved data
+            //     //setUserList(prevUserList => [...prevUserList, savedData]);
+            // }
+            // else {
+            //     //console.log(saved);
+            //     //const error = await saved.json();
+            //     //alert(error.error);
+            //     console.log("Request was not successful. Status Code : " + saved.status)
+            // }
         }
         catch (e) {
+            alert(e.response.data.error);
             console.log(e)
         }
     };
@@ -123,7 +134,7 @@ function AddUserDialog(props) {
                                 Sign up
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 6 }}>
-                                <Grid container spacing={2}>
+                                <Grid container spacing={2} >
                                     <Grid item xs={12} sm={6}>
                                         <FormControl fullWidth variant="outlined" >
                                             <InputLabel required id="demo-simple-select-standard-label">Role</InputLabel>
@@ -188,8 +199,8 @@ function AddUserDialog(props) {
                                     <Grid item xs={12}>
                                         <TextField
                                             required
-                                            fullWidth
-                                            name="password"
+                                            fullWidth 
+                                            name="password" 
                                             label="Password"
                                             type="password"
                                             id="password"
@@ -215,7 +226,7 @@ function AddUserDialog(props) {
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Buttons onClick={props.onHide}>Close</Buttons>
+                    <Buttons onClick={props.onHide} style={{width:'10vh'}}>Close</Buttons>
                 </Modal.Footer>
             </Modal>
         </>
