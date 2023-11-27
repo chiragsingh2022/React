@@ -23,6 +23,7 @@ import MuiAlert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Tooltip } from '@mui/material';
 
 const UserRegistration = () => {
     const token = localStorage.getItem('token');
@@ -183,9 +184,11 @@ const UserRegistration = () => {
                                             </td>
                                             <td>{
                                                 user._id !== item._id ?
-                                                    <IconButton sx={{ '&:hover': { boxShadow: 4 } }} onClick={() => DeleteUser(item._id)} aria-label="delete" size="small">
-                                                        <DeleteIcon fontSize="small" />
-                                                    </IconButton>
+                                                    <Tooltip title='Delete' placement='top'>
+                                                        <IconButton sx={{ '&:hover': { boxShadow: 4, color: 'red' } }} onClick={() => DeleteUser(item._id)} aria-label="delete" size="small">
+                                                            <DeleteIcon fontSize="small" />
+                                                        </IconButton>
+                                                    </Tooltip>
                                                     :
                                                     <h5>Logged In</h5>
                                             }
