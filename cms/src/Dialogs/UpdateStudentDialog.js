@@ -31,6 +31,7 @@ import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateField } from "@mui/x-date-pickers";
+import Cookies from "js-cookie";
 
 const UpdateStudentDialog = (props) => {
     // const useparams = useParams();
@@ -89,7 +90,7 @@ const UpdateStudentDialog = (props) => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'authorization': `Bearer ${localStorage.getItem('token')}`
+                    'authorization': `Bearer ${Cookies.get('token')}`
                 },
                 body: JSON.stringify(formData)
             });

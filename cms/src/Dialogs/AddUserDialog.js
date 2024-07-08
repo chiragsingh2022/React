@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Buttons from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Grid from '@mui/material/Grid';
-import CssBaseline from '@mui/material/CssBaseline';
+import '../css/MainCss.css';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -14,12 +14,13 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import api_URL from '../Helper';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
-import axios from 'axios';
 import { userServices } from '../services/user-services';
+import { FormControlLabel, Switch } from '@mui/material';
+import useMessageDialog from '../CustomHooks/useMessageDialog';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -33,20 +34,36 @@ function AddUserDialog(props) {
 
     const [open, setOpen] = React.useState(false);
     const [transition, setTransition] = React.useState(undefined);
+    const token = localStorage.getItem('token');
+    const { showMessageDialog, DialogComponent } = useMessageDialog();
+    const [switchStates, setSwitchStates] = useState({
+        candeletestudent: false,
+        canupdatestudent: false,
+        canviewstudent: false,
+        canviewrss: false,
+        canviewregistration: false,
+    });
+
+    const handleChange = (event) => {
+        const { name, checked } = event.target;
+        setSwitchStates({ ...switchStates, [name]: checked });
+    };
+
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setOpen(false);
     };
-    const token = localStorage.getItem('token');
-    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
         if (!data.get('userType') || !data.get('email') || !data.get('password') || !data.get('fname') || !data.get('lname') || !data.get('mobile')) {
-            alert("Please fill in all required fields.");
+            //alert("Please fill in all required fields.");
+            await showMessageDialog("Validation failed","Please fill all required fields.");
             return;
         }
         const userData = {
@@ -56,14 +73,16 @@ function AddUserDialog(props) {
             lname: data.get('lname'),
             fname: data.get('fname'),
             mobile: data.get('mobile'),
+            ...switchStates,
         }
-       // console.log(userData,'userData');
+
+        console.log(userData);
         try {
-            userServices.postUser(userData).then((res)=>{
+            userServices.postUser(userData).then((res) => {
                 setTransition(() => TransitionLeft);
                 setOpen(true);
                 props.onHide();
-            }).catch((error)=>{
+            }).catch((error) => {
                 console.log(error);
             });
             // var saved = await axios.post(`${api_URL}/api/user/`,userData, {
@@ -100,6 +119,7 @@ function AddUserDialog(props) {
 
     return (
         <>
+            {DialogComponent}
             <Snackbar open={open} key={transition ? transition.name : ''} TransitionComponent={transition} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
                     User Successfully Created!
@@ -108,7 +128,7 @@ function AddUserDialog(props) {
             <Modal
                 {...props} backdrop="static"
                 keyboard={false}
-                size="md"
+                size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
             >
@@ -119,10 +139,10 @@ function AddUserDialog(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <Container component="main" maxWidth="md">
-                        <CssBaseline />
+
                         <Box
                             sx={{
-                                marginTop: 4,
+                                marginTop: 2,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
@@ -185,7 +205,6 @@ function AddUserDialog(props) {
                                             autoComplete="family-name"
                                         />
                                     </Grid>
-
                                     <Grid item xs={12}>
                                         <TextField
                                             required
@@ -199,21 +218,99 @@ function AddUserDialog(props) {
                                     <Grid item xs={12}>
                                         <TextField
                                             required
-                                            fullWidth 
-                                            name="password" 
+                                            fullWidth
+                                            name="password"
                                             label="Password"
                                             type="password"
                                             id="password"
                                             autoComplete="new-password"
                                         />
                                     </Grid>
-
                                 </Grid>
+                                <fieldset className='abcde'>
+                                    <legend>Permissions</legend>
+                                    <div>
+                                        <Grid container spacing={2} >
+
+                                            <Grid item xs={12} sm={4} >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={switchStates.candeletestudent}
+                                                            name="candeletestudent"
+                                                            onChange={handleChange}
+                                                        />}
+                                                    label="Delete Student" />
+                                            </Grid>
+                                            <Grid item xs={12} sm={4} >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={switchStates.canupdatestudent}
+                                                            name="canupdatestudent"
+                                                            onChange={handleChange}
+                                                        />}
+                                                    label="Update Student" />
+                                            </Grid>
+                                            <Grid item xs={12} sm={4} >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={switchStates.canviewstudent}
+                                                            name="canviewstudent"
+                                                            onChange={handleChange}
+                                                        />}
+                                                    label="View Student" />
+                                            </Grid>
+                                            <Grid item xs={12} sm={4} >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={switchStates.canviewrss}
+                                                            name="canviewrss"
+                                                            onChange={handleChange}
+                                                        />}
+                                                    label="RSS" />
+                                            </Grid>
+                                            <Grid item xs={12} sm={4} >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={switchStates.canviewregistration}
+                                                            name="canviewregistration"
+                                                            onChange={handleChange}
+                                                        />}
+                                                    label="show users" />
+                                            </Grid>
+                                            <Grid item xs={12} sm={4} >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={switchStates.canviewSettings}
+                                                            name="canviewsettings"
+                                                            onChange={handleChange}
+                                                        />}
+                                                    label="Show Settings" />
+                                            </Grid>
+                                            <Grid item xs={12} sm={4} >
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={switchStates.canviewstaff}
+                                                            name="canviewstaff"
+                                                            onChange={handleChange}
+                                                        />}
+                                                    label="Show Staff" />
+                                            </Grid>
+
+                                        </Grid>
+                                    </div>
+                                </fieldset>
                                 <Button
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-                                    sx={{ mt: 4, mb: 6, '&:hover': { boxShadow: 8 }}}
+                                    sx={{ mt: 4, mb: 6, '&:hover': { boxShadow: 8 } }}
                                 >
                                     Sign Up
                                 </Button>
@@ -226,9 +323,9 @@ function AddUserDialog(props) {
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Buttons onClick={props.onHide} style={{width:'10vh'}}>Close</Buttons>
+                    <Buttons onClick={props.onHide} style={{ width: '10vh' }}>Close</Buttons>
                 </Modal.Footer>
-            </Modal>
+            </Modal >
         </>
     );
 }

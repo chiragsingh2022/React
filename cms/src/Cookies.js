@@ -46,9 +46,9 @@ function remove(name) {
     document.cookie = `${name}=; expires=${expiredDate.toUTCString()}; path=/`;
 }
 
-export default {
-    setItem,
-    getItem,
-    clear,
-    remove,
-}
+// export default {
+//     setItem,
+//     getItem,
+//     clear,
+//     remove,
+// }
