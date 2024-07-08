@@ -1,17 +1,55 @@
-.header {
-    display: flex;
-    justify-content: center; /* Horizontal centering */
-    align-items: center; /* Vertical centering */ 
-    background-color: #FF9933;
-    height: 120px; border-bottom: 2px solid navy; 
-    
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 
-.header h1 {
-    color: white;
-    font-weight: bold;
-    /* You don't need align-items and align-content here */
-    text-align: center; /* If you want to center the text horizontally within h1 */
+.header {
+    display: flex;
+    justify-content: center;
+    /* Horizontal centering */
+    align-items: center;
+    /* Vertical centering */
+    /* background-color: #FF9933; */
+    background-image: linear-gradient(to right, #FF9933, white, green);
+
+    /* border-bottom: 2px solid navy;  */
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+
+}
+
+.header1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Horizontal centering */
+    align-items: center;
+    /* Vertical centering */
+    /* background-color: #FF9933; */
+    /* background-image: linear-gradient(to right, #FF9933, white, green); */
+
+    /* border-bottom: 2px solid navy;  */
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+
+}
+
+
+.header1 h2 {
+    color: navy;
+    /* background: linear-gradient(red, navy);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text; */
+    font-weight: 700;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 3rem;
+    text-align: center;
+    /* text-shadow: -3px 5px 20px rgb(0, 0, 38); */
+    /* background-image: linear-gradient(45deg,red,yellow); */
+}
+
+.header1 h5 {
+    color: red;
 }
 
 /* .footer{
@@ -27,3 +65,16 @@
     align-items: center;
     text-align: center;
 } */
+
+.footer-class {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(232, 232, 232);
+    padding: 1rem;
+    height: auto;
+    bottom: 0;
+    /* box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px; */
+}

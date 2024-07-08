@@ -1,0 +1,27 @@
+.staff-container {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    
+}
+
+.content-section {
+    padding: 1rem;
+    margin: 1rem ;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(18rem,1fr));
+    grid-row: auto;
+    gap: 4rem;
+   
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+@media (width < 768px) {
+    
+    .content-section {
+        grid-template-columns: repeat(auto-fit,18rem);
+        grid-row: auto;
+    }
+}

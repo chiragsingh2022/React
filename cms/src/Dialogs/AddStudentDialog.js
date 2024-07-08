@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Buttons from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Grid from '@mui/material/Grid';
@@ -13,7 +13,6 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import api_URL from '../Helper';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
@@ -21,8 +20,6 @@ import { Stack } from 'react-bootstrap';
 import { DateField, LocalizationProvider } from '@mui/x-date-pickers';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { Input } from '@mui/material';
 import { userServices } from '../services/user-services';
 
 
@@ -37,12 +34,10 @@ function TransitionLeft(props) {
 
 function AddStudentDialog(props) {
 
-    const [open, setOpen] = React.useState(false);
-    const [transition, setTransition] = React.useState(undefined);
+    const [open, setOpen] = useState(false);
+    const [transition, setTransition] = useState(undefined);
     const [dob, setDob] = useState();
     const user = JSON.parse(localStorage.getItem('user'));
-    const token = localStorage.getItem('token');
-    const [imageSrc, setImageSrc] = useState(null);
     const [image, setImage] = useState("");
 
     const handleClose = (event, reason) => {
@@ -53,7 +48,7 @@ function AddStudentDialog(props) {
     };
     const handleHide = () => {
         // Additional cleanup when the modal is hidden
-        setImageSrc(null);
+        setImage(null);
         props.onHide();
     };
 
@@ -119,8 +114,12 @@ function AddStudentDialog(props) {
         formDataToSend.append("image", image);
         try {
             userServices.postStudent(formDataToSend).then((res) => {
+                //console.log(res);
                 setTransition(() => TransitionLeft);
                 setOpen(true);
+                if (res.data) {
+                    props.savedStudent(res.data);
+                }
                 props.onHide();
             });
         }
@@ -170,8 +169,10 @@ function AddStudentDialog(props) {
                                     <TextField
                                         required={true}
                                         id="studentid"
-                                        name="studentid" size='small'
-                                        label="Student ID" onChange={handleChange}
+                                        name="studentid" 
+                                        size='small'
+                                        label="Student ID" 
+                                        onChange={handleChange}
                                         fullWidth autoFocus
                                         autoComplete="student-id"
                                         variant="outlined"
@@ -180,7 +181,8 @@ function AddStudentDialog(props) {
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         required
-                                        id="firstName" size='small'
+                                        id="firstName" 
+                                        size='small'
                                         name="fname"
                                         label="First name"
                                         fullWidth onChange={handleChange}
@@ -191,9 +193,11 @@ function AddStudentDialog(props) {
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         required
-                                        id="middleName" size='small'
+                                        id="middleName" 
+                                        size='small'
                                         name="mname"
-                                        label="Middle name" onChange={handleChange}
+                                        label="Middle name" 
+                                        onChange={handleChange}
                                         fullWidth
                                         autoComplete="middle-name"
                                         variant="outlined"
@@ -248,7 +252,8 @@ function AddStudentDialog(props) {
                                     <TextField
                                         required
                                         id="phone"
-                                        name="phonenumber" onChange={handleChange}
+                                        name="phonenumber" 
+                                        onChange={handleChange}
                                         label="Phone"
                                         fullWidth size='small'
                                         autoComplete="cell-phone"
@@ -270,10 +275,12 @@ function AddStudentDialog(props) {
                                 <Grid item xs={12}>
                                     <TextField required
                                         id="address"
-                                        name="address" onChange={handleChange}
+                                        name="address" 
+                                        onChange={handleChange}
                                         label="Address"
                                         fullWidth
-                                        autoComplete="address-line1" size='small'
+                                        autoComplete="address-line1" 
+                                        size='small'
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -281,8 +288,10 @@ function AddStudentDialog(props) {
                                     <TextField
                                         required
                                         id="city"
-                                        name="city" onChange={handleChange}
-                                        label="City" size='small'
+                                        name="city" 
+                                        onChange={handleChange}
+                                        label="City" 
+                                        size='small'
                                         fullWidth
                                         autoComplete="address-city"
                                         variant="outlined"
@@ -290,16 +299,19 @@ function AddStudentDialog(props) {
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
-                                        id="state" onChange={handleChange}
+                                        id="state" 
+                                        onChange={handleChange}
                                         name="state"
                                         label="State/Province/Region"
-                                        fullWidth size='small'
+                                        fullWidth 
+                                        size='small'
                                         variant="outlined"
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
-                                        required size='small'
+                                        required 
+                                        size='small'
                                         id="zip"
                                         name="zip"
                                         label="Zip / Postal code"
@@ -311,7 +323,8 @@ function AddStudentDialog(props) {
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         required
-                                        id="country" size='small'
+                                        id="country" 
+                                        size='small'
                                         name="country"
                                         label="Country"
                                         fullWidth
@@ -319,7 +332,6 @@ function AddStudentDialog(props) {
                                         variant="outlined"
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4} />
 
                                 <Grid sx={{ '& button': { mt: 2, p: 1 } }} item sm={4}>
 

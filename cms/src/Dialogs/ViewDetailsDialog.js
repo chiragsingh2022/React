@@ -21,6 +21,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateField } from "@mui/x-date-pickers";
 import { format } from "date-fns";
+import '../css/MainCss.css';
 
 const ViewDetailsDialog = (props) => {
 

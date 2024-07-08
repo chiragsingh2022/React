@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import '../css/MainCss.css';
 //import 'w3-css/w3.css';
-import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
-import { Table } from 'react-bootstrap';
+import { Stack, Table } from 'react-bootstrap';
 import api_URL from '../Helper';
 import Grid from '@mui/material/Grid';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import Slide from '@mui/material/Slide';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import AddUserDialog from '../Dialogs/AddUserDialog';
+import UpdateUserDialog from '../Dialogs/UpdateUserDialog';
+import Cookies from 'js-cookie';
+
+import AddIcon from '@mui/icons-material/Add';
+import useYesNoDialog from '../CustomHooks/useYesNoDialog';
 
 const UserRegistration = () => {
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user'));
+    const token = Cookies.get('token');
+    const userData = Cookies.get('user');
+    let user = null;
+    if(userData){
+        user = JSON.parse(userData);
+    }    
 
     const navigate = useNavigate();
     const [userList, setUserList] = useState([]);
-
+    const [selectedUser, setSelectedUser] = useState([]);
+    const [updateUser, setUpdateUser] = useState(false);
+    const [modalShow, setModalShow] = useState(false);
+    const [updateModalShow, setUpdateModalShow] = useState(false);
 
 
     useEffect(() => {
@@ -43,14 +41,14 @@ const UserRegistration = () => {
             fetch(`${api_URL}/api/user`, {
                 method: 'GET',
                 headers: {
-                    'authorization': `Bearer ${localStorage.getItem('token')}`
+                    'authorization': `Bearer ${token}`
                 }
             }).then((result) => {
                 result.json().then((res) => {
                     if (Array.isArray(res)) {
                         setUserList(res)
                     } else {
-                        localStorage.clear();
+                        //localStorage.clear();
                         navigate(res.result);
                     }
                 })
@@ -106,16 +104,18 @@ const UserRegistration = () => {
     //         console.log(e)
     //     }
     // };
-
-    const DeleteUser = async (_id) => {
-        const confirmed = window.confirm("Are you sure ?");
+    const { showYesNoDialog, YesNoDialogComponent } = useYesNoDialog();
+    const deleteUser = async (_id) => {
+        const confirmed = await showYesNoDialog("Delete Record!", "Are you sure you want to delete?");
+        //const confirmed = window.confirm("Are you sure ?");
         if (confirmed) {
+            console.log("Yes clicked");
             try {
                 if (user._id !== _id) {
                     let deleteUser = await fetch(`${api_URL}/api/user/${_id}`, {
                         method: 'DELETE',
                         headers: {
-                            'authorization': `Bearer ${localStorage.getItem('token')}`
+                            'authorization': `Bearer ${token}`
                         }
                     })
                     if (deleteUser.ok) {
@@ -133,11 +133,38 @@ const UserRegistration = () => {
         }
     }
 
+    const updateUser_ButtonClick = (item) => {        
+        setSelectedUser(item);
+        setUpdateUser(true);
+    }
+
+    const updateUserList = (updatedData) => {
+        //console.log(updatedData);
+        const updatedIndex = userList.findIndex((s) => s._id === updatedData._id);
+        // If the student is found, update the array
+        if (updatedIndex !== -1) {
+            const updatedUserList = [...userList];
+            updatedUserList[updatedIndex] = updatedData;
+            setUserList(updatedUserList);
+        }
+    }
+
     return (
         <>
-            <NavBar />
-
-            <Grid p={4} container spacing={3} sx={{ minHeight: '100vh' }}>
+        <div className="rss-grid-container">
+                <div className="rss-rows">
+                    <div className=" teacher-table-header rss-header-text">
+                        <h4>Manage User's</h4>
+                        <div>
+                            <Tooltip title='Add' placement="top">
+                                <IconButton onClick={() => setModalShow(true)} sx={{ '&:hover': { color: 'blue' } }} aria-label="delete" size="large">
+                                    <AddIcon fontSize="large" />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    </div>
+                    <div className="rss-table">
+                    <Grid p={4} container spacing={3} sx={{ minHeight: '100vh' }}>
                 <Grid item xs={12} sm={12}>
                     <div style={{ borderRadius: 8 }} >
                         <Table responsive hover>
@@ -184,11 +211,18 @@ const UserRegistration = () => {
                                             </td>
                                             <td>{
                                                 user._id !== item._id ?
-                                                    <Tooltip title='Delete' placement='top'>
-                                                        <IconButton sx={{ '&:hover': { boxShadow: 4, color: 'red' } }} onClick={() => DeleteUser(item._id)} aria-label="delete" size="small">
-                                                            <DeleteIcon fontSize="small" />
-                                                        </IconButton>
-                                                    </Tooltip>
+                                                    <Stack direction='horizontal' gap={0}>
+                                                        <Tooltip title='Delete' placement='top'>
+                                                            <IconButton sx={{ '&:hover': { boxShadow: 4, color: 'red' } }} onClick={() => deleteUser(item._id)} aria-label="delete" size="small">
+                                                                <DeleteIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip title='Update' placement="top">
+                                                            <IconButton sx={{ '&:hover': { boxShadow: 4, color: 'green' } }} onClick={() => updateUser_ButtonClick(item)} aria-label="update" size="small">
+                                                                <EditIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Stack>
                                                     :
                                                     <h5>Logged In</h5>
                                             }
@@ -315,6 +349,18 @@ const UserRegistration = () => {
 
                 </Grid> */}
             </Grid>
+                    </div>
+                </div>
+            </div>
+            <AddUserDialog show={modalShow} onHide={() => setModalShow(false)} />
+            <UpdateUserDialog show={updateUser} 
+            onHide={() => {
+                setUpdateUser(false);
+                setSelectedUser([]);
+            }} 
+            userdata={selectedUser} 
+            updateList={updateUserList}/>
+            {YesNoDialogComponent}
         </>
     );
 }
